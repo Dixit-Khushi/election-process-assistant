@@ -4,6 +4,12 @@ const ai = new GoogleGenAI({
   apiKey: import.meta.env.VITE_GEMINI_API_KEY
 });
 
+/**
+ * Initializes a new conversational session with the Gemini AI model.
+ * It configures the model to act as an impartial civic assistant.
+ * 
+ * @returns {Promise<Object>} The initialized chat session object.
+ */
 export async function createChatSession() {
   const model = "gemini-2.5-flash";
   const systemInstruction = `You are Omni-Bot, a highly knowledgeable and impartial AI assistant designed to help citizens understand the election process, voting laws, and civic duties. 
@@ -22,6 +28,13 @@ Keep your answers under 3 paragraphs to ensure readability in a chat UI.`;
   return chat;
 }
 
+/**
+ * Analyzes a given civic or election-related claim using the Gemini AI model.
+ * Returns a structured JSON object categorizing the claim as danger, warning, or safe.
+ * 
+ * @param {string} claim - The raw text claim inputted by the user.
+ * @returns {Promise<Object>} An object containing status, title, description, and source.
+ */
 export async function analyzeClaim(claim) {
   const model = "gemini-2.5-flash";
   const systemInstruction = `You are an impartial fact-checking system. Analyze the following claim regarding US elections or voting. 

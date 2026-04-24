@@ -47,7 +47,7 @@ export default function MisinfoShield() {
           </div>
         </div>
 
-        <form onSubmit={handleScan} className="relative mb-6">
+        <form onSubmit={handleScan} className="relative mb-6" aria-label="Misinformation Scanner Form">
           <input
             type="text"
             value={query}
@@ -55,12 +55,14 @@ export default function MisinfoShield() {
             placeholder="e.g., 'Can I vote by text message?'"
             className="w-full bg-black/40 border border-white/10 rounded-xl py-4 pl-12 pr-32 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
             disabled={isScanning}
+            aria-label="Enter a claim or rumor to analyze"
           />
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" size={20} />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" size={20} aria-hidden="true" />
           
           <button
             type="submit"
             disabled={isScanning || !query.trim()}
+            aria-label="Analyze Claim"
             className="absolute right-2 top-1/2 -translate-y-1/2 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center gap-2"
           >
             {isScanning ? (

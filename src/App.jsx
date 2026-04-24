@@ -1,13 +1,15 @@
-import { Suspense } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stars, Loader } from '@react-three/drei';
 import { motion } from 'framer-motion';
 import { Vote, ChevronDown } from 'lucide-react';
 
-import Timeline3D from './components/3d/Timeline3D';
 import OmniBot from './components/ui/OmniBot';
 import MisinfoShield from './components/ui/MisinfoShield';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
+
+// Lazy load heavy 3D components for efficiency
+const Timeline3D = lazy(() => import('./components/3d/Timeline3D'));
 
 function App() {
   const scrollToExplore = () => {
@@ -107,7 +109,9 @@ function App() {
                 <Canvas gl={{ antialias: true, alpha: true }} camera={{ position: [0, 0, 8], fov: 50 }}>
                   <ambientLight intensity={0.5} />
                   <pointLight position={[10, 10, 10]} intensity={1} color="#fff" />
-                  <Timeline3D />
+                  <Suspense fallback={null}>
+                    <Timeline3D />
+                  </Suspense>
                   <OrbitControls enableZoom={false} enablePan={false} />
                 </Canvas>
               </ErrorBoundary>
