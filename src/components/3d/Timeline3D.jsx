@@ -37,15 +37,17 @@ const TimelineNode = ({ step, index, activeNode, setActiveNode }) => {
           onPointerOut={() => document.body.style.cursor = 'auto'}
         >
           <icosahedronGeometry args={[0.5, 1]} />
-          <MeshDistortMaterial 
+          <MeshPhysicalMaterial 
             color={step.color} 
+            emissive={step.color}
+            emissiveIntensity={isActive ? 0.5 : 0.2}
             envMapIntensity={1} 
             clearcoat={1} 
             clearcoatRoughness={0} 
             metalness={0.8}
             roughness={0.2}
-            distort={isActive ? 0.4 : 0.2}
-            speed={isActive ? 4 : 2}
+            transmission={0.5}
+            thickness={1}
           />
         </mesh>
       </Float>

@@ -7,6 +7,7 @@ import { Vote, ChevronDown } from 'lucide-react';
 import Timeline3D from './components/3d/Timeline3D';
 import OmniBot from './components/ui/OmniBot';
 import MisinfoShield from './components/ui/MisinfoShield';
+import { ErrorBoundary } from './components/ui/ErrorBoundary';
 
 function App() {
   const scrollToExplore = () => {
@@ -20,22 +21,24 @@ function App() {
       <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
         {/* Background Canvas */}
         <div className="absolute inset-0 z-0">
-          <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
-            <color attach="background" args={['#050505']} />
-            <ambientLight intensity={0.5} />
-            <pointLight position={[10, 10, 10]} intensity={1} color="#4f46e5" />
-            <pointLight position={[-10, -10, -10]} intensity={0.5} color="#06b6d4" />
-            <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-            
-            <Suspense fallback={null}>
-              {/* Optional: Add a slow rotating abstract shape here in the background */}
-              <mesh position={[0, 0, -5]}>
-                <torusGeometry args={[3, 0.5, 16, 100]} />
-                <meshStandardMaterial color="#4f46e5" wireframe opacity={0.1} transparent />
-              </mesh>
-            </Suspense>
-            <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
-          </Canvas>
+          <ErrorBoundary>
+            <Canvas gl={{ antialias: true, alpha: true }} camera={{ position: [0, 0, 8], fov: 45 }}>
+              <color attach="background" args={['#050505']} />
+              <ambientLight intensity={0.5} />
+              <pointLight position={[10, 10, 10]} intensity={1} color="#4f46e5" />
+              <pointLight position={[-10, -10, -10]} intensity={0.5} color="#06b6d4" />
+              <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+              
+              <Suspense fallback={null}>
+                {/* Optional: Add a slow rotating abstract shape here in the background */}
+                <mesh position={[0, 0, -5]}>
+                  <torusGeometry args={[3, 0.5, 16, 100]} />
+                  <meshStandardMaterial color="#4f46e5" wireframe opacity={0.1} transparent />
+                </mesh>
+              </Suspense>
+              <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
+            </Canvas>
+          </ErrorBoundary>
         </div>
 
         {/* Content Overlay */}
@@ -100,12 +103,14 @@ function App() {
             </div>
             
             <div className="h-[500px] w-full rounded-2xl border border-white/10 overflow-hidden relative bg-black/20">
-              <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
-                <ambientLight intensity={0.5} />
-                <pointLight position={[10, 10, 10]} intensity={1} color="#fff" />
-                <Timeline3D />
-                <OrbitControls enableZoom={false} enablePan={false} />
-              </Canvas>
+              <ErrorBoundary>
+                <Canvas gl={{ antialias: true, alpha: true }} camera={{ position: [0, 0, 8], fov: 50 }}>
+                  <ambientLight intensity={0.5} />
+                  <pointLight position={[10, 10, 10]} intensity={1} color="#fff" />
+                  <Timeline3D />
+                  <OrbitControls enableZoom={false} enablePan={false} />
+                </Canvas>
+              </ErrorBoundary>
               <div className="absolute bottom-4 right-4 text-xs text-zinc-500 pointer-events-none">
                 * Drag to rotate view
               </div>
