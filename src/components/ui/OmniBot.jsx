@@ -1,25 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Bot, Send, User, Sparkles, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-const PRE_PROGRAMMED_RESPONSES = [
-  {
-    keywords: ["register", "how to register", "sign up"],
-    response: "You can register to vote online, by mail, or in person. Deadlines vary by state. Do you need the specific deadline for your state?"
-  },
-  {
-    keywords: ["mail", "absentee", "vote by mail"],
-    response: "To vote by mail, you must request an absentee ballot. All registered voters can vote by mail in some states, while others require an excuse. Ensure you mail it back before Election Day!"
-  },
-  {
-    keywords: ["id", "identification", "bring"],
-    response: "Voter ID laws vary. 36 states require some form of ID at the polls. It's best to bring a valid Driver's License, State ID, or Passport just in case."
-  },
-  {
-    keywords: ["hello", "hi", "hey"],
-    response: "Hello citizen! I am Omni-Bot, your personal election assistant. How can I help you navigate the democratic process today?"
-  }
-];
+import { createChatSession } from '../../lib/gemini';
 
 export default function OmniBot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +10,21 @@ export default function OmniBot() {
   ]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [chatSession, setChatSession] = useState(null);
   const messagesEndRef = useRef(null);
+
+  // Initialize chat session on mount
+  useEffect(() => {
+    async function initChat() {
+      try {
+        const session = await createChatSession();
+        setChatSession(session);
+      } catch (error) {
+        console.error("Failed to initialize chat:", error);
+      }
+    }
+    initChat();
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -38,31 +34,25 @@ export default function OmniBot() {
     scrollToBottom();
   }, [messages, isTyping]);
 
-  const handleSend = () => {
-    if (!input.trim()) return;
+  const handleSend = async () => {
+    if (!input.trim() || !chatSession) return;
 
     const userMessage = input.trim();
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setInput("");
     setIsTyping(true);
 
-    // Simulated AI Processing
-    setTimeout(() => {
-      let aiResponse = "I'm not entirely sure about that specific detail. I recommend checking your local election office website for the most accurate information.";
+    try {
+      const result = await chatSession.sendMessage({ message: userMessage });
+      const aiResponse = result.text;
       
-      const lowerInput = userMessage.toLowerCase();
-      
-      // Simple keyword matching for hackathon simulation
-      for (const item of PRE_PROGRAMMED_RESPONSES) {
-        if (item.keywords.some(kw => lowerInput.includes(kw))) {
-          aiResponse = item.response;
-          break;
-        }
-      }
-
       setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }]);
+    } catch (error) {
+      console.error("Chat error:", error);
+      setMessages(prev => [...prev, { role: 'assistant', content: "I'm having trouble connecting to the intelligence network. Please try again later." }]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   return (

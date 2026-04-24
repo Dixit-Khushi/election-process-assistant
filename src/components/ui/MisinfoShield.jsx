@@ -1,48 +1,34 @@
 import { useState } from 'react';
 import { Shield, ShieldAlert, ShieldCheck, Search, Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { analyzeClaim } from '../../lib/gemini';
 
 export default function MisinfoShield() {
   const [query, setQuery] = useState('');
   const [isScanning, setIsScanning] = useState(false);
   const [result, setResult] = useState(null);
 
-  const handleScan = (e) => {
+  const handleScan = async (e) => {
     e.preventDefault();
     if (!query.trim()) return;
 
     setIsScanning(true);
     setResult(null);
 
-    // Simulate scanning and analysis delay
-    setTimeout(() => {
+    try {
+      const analysis = await analyzeClaim(query);
+      setResult(analysis);
+    } catch (error) {
+      console.error("Failed to analyze:", error);
+      setResult({
+        status: 'warning',
+        title: 'Error',
+        description: 'Failed to connect to the intelligence network.',
+        source: 'System'
+      });
+    } finally {
       setIsScanning(false);
-      
-      const lowerQuery = query.toLowerCase();
-      // Simple mock logic for hackathon
-      if (lowerQuery.includes('text') || lowerQuery.includes('sms') || lowerQuery.includes('fee')) {
-        setResult({
-          status: 'danger',
-          title: 'High Probability of Misinformation',
-          description: 'You cannot vote via text message or SMS in any US election. Voting is free; there is never a fee to cast your ballot.',
-          source: 'Verified by State Election Boards'
-        });
-      } else if (lowerQuery.includes('mail') || lowerQuery.includes('fraud')) {
-        setResult({
-          status: 'warning',
-          title: 'Needs Context',
-          description: 'Mail-in voting is a secure process used by millions. While isolated incidents occur, widespread voter fraud via mail has been thoroughly debunked by multiple agencies.',
-          source: 'Cybersecurity and Infrastructure Security Agency (CISA)'
-        });
-      } else {
-        setResult({
-          status: 'safe',
-          title: 'Verified Fact',
-          description: 'Based on official election data, this aligns with verified voting procedures and facts.',
-          source: 'Official Election Records'
-        });
-      }
-    }, 2000);
+    }
   };
 
   return (
