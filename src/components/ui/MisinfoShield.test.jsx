@@ -30,10 +30,23 @@ describe('MisinfoShield Component', () => {
     render(<MisinfoShield />);
     const input = screen.getByPlaceholderText(/Can I vote by text message/i);
     const button = screen.getByRole('button', { name: /Analyze Claim/i });
+    fireEvent.change(input, { target: { value: 'Test Claim' } });
+    fireEvent.click(button);
+    
+    expect(await screen.findByText(/Scanning/i)).toBeInTheDocument();
+  });
+
+  it('shows error message when API call fails', async () => {
+    const { analyzeClaim } = await import('../../lib/gemini');
+    analyzeClaim.mockRejectedValueOnce(new Error('API Error'));
+    
+    render(<MisinfoShield />);
+    const input = screen.getByPlaceholderText(/Can I vote by text message/i);
+    const button = screen.getByRole('button', { name: /Analyze Claim/i });
     
     fireEvent.change(input, { target: { value: 'Test Claim' } });
     fireEvent.click(button);
     
-    expect(await screen.findByText(/Cross-referencing databases/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Failed to connect to the intelligence network/i)).toBeInTheDocument();
   });
 });

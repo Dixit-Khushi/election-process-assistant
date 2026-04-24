@@ -60,7 +60,7 @@ export default function OmniBot() {
       {/* Floating Action Button */}
       <motion.button
         aria-label="Open Omni-Bot Civic Assistant"
-        className="fixed bottom-8 right-8 z-50 p-4 rounded-full bg-blue-600 text-white shadow-lg shadow-blue-500/50 hover:bg-blue-500 transition-colors"
+        className="fixed bottom-8 right-8 z-50 p-4 rounded-full bg-blue-600 text-white shadow-lg shadow-blue-500/50 hover:bg-blue-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(true)}
@@ -97,7 +97,7 @@ export default function OmniBot() {
               <button 
                 onClick={() => setIsOpen(false)}
                 aria-label="Close Chat"
-                className="p-2 rounded-full hover:bg-white/10 text-zinc-400 transition-colors"
+                className="p-2 rounded-full hover:bg-white/10 text-zinc-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
               >
                 <X size={20} />
               </button>
@@ -149,13 +149,13 @@ export default function OmniBot() {
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                   placeholder="Ask about elections..."
                   aria-label="Type your question here"
-                  className="flex-1 bg-black/20 border border-white/10 rounded-full px-4 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+                  className="flex-1 bg-black/20 border border-white/10 rounded-full px-4 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus-visible:ring-blue-500 transition-all"
                 />
                 <button 
                   onClick={handleSend}
                   disabled={!input.trim() || isTyping}
                   aria-label="Send Message"
-                  className="p-2 rounded-full bg-blue-600 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-500 transition-colors"
+                  className="p-2 rounded-full bg-blue-600 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                 >
                   <Send size={18} className="ml-0.5" />
                 </button>
